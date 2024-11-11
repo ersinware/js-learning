@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>index</title>
+    <link rel="stylesheet" href="../css/0-index.css">
+
+    <!--
+    If your scripts should be run immediately, and they don't have any dependencies, then use async.
+    If your scripts need to wait for parsing and depend on other scripts and/or the DOM being in place, load them using defer and put
+    their corresponding <script> elements in the order you want the browser to execute them.
+
+    async
+        allows the script to be downloaded in the background without blocking. Then, the moment it finishes downloading, rendering is
+        blocked and that script executes. Render resumes when the script has executed.
+    defer
+        does the same thing, except claims to guarantee that scripts execute in the order they were specified on the page, and that
+        they will be executed after the document has finished parsing. So, some scripts may finish downloading then sit and wait for
+        scripts that downloaded later but appeared before them.
+
+    Fetch the HTML page (e.g. index.html)
+    Begin parsing the HTML
+    The parser encounters a <script> tag referencing an external script file.
+    The browser requests the script file. Meanwhile, the parser blocks and stops parsing the other HTML on your page.
+    After some time the script is downloaded and subsequently executed.
+    The parser continues parsing the rest of the HTML document. -->
+
+    <!--    <script src="../js/1.1-variablesAndOperators.js" defer async></script>-->
+    <!--    <script src="../js/1.2-date.js" defer async></script>-->
+    <!--    <script src="../js/2-scope.js" defer async></script>-->
+    <!--    <script src="../js/3-loops.js" defer async></script>-->
+    <!--    <script src="../js/4-conditions.js" defer async></script>-->
+    <!--    <script src="../js/5-functions.js" defer async></script>-->
+    <!--    <script src="../js/6.1-documentsAndClasses.js" defer async></script>-->
+    <!--    <script src="../js/6.2-prototypeAndInheritance.js" defer async></script>-->
+    <!--    <script src="../js/7-errorHandling.js" defer async></script>-->
+    <!--    <script src="../js/8.1-asynchrony.js" defer async></script>-->
+    <!--    <script src="../js/8.2-asynchrony.js" defer async></script>-->
+    <!--    <script src="../js/8.3-asynchrony.js" defer async></script>-->
+    <!--    <script src="../js/8.4-asynchrony.js" defer async></script>-->
+    <!--    <script src="../js/8.5-microtasks.js" defer async></script>-->
+    <!--    <script src="../js/8.6-separatingLongTasks.js" defer async></script>-->
+    <!--    <script src="../js/8.7-notes.js" defer async></script>-->
+    <!--    <script src="../js/9.1-dom.js" defer async></script>-->
+    <!--    <script src="../js/9.2-domEvents.js" defer async></script>-->
+    <!--    <script src="../js/9.3-domStyling.js" defer async></script>-->
+    <!--    <script src="../js/10.1-arrays.js" defer async></script>-->
+    <!--    <script src="../js/10.2-mapsAndSets.js" defer async></script>-->
+
+    <!-- modules are deferred automatically -->
+    <!--    <script type="module" src="../js/11.2-import.js" async></script>-->
+
+    <!--    <script src="../js/12-memoryManagement.js" async></script>-->
+
+    <!--    <script src="../js/apis/1.1-dedicatedWorkers.js" defer async></script>-->
+    <!--    <script src="../js/apis/1.3-sharedWorkers.js" defer async></script>-->
+    <!--    <script src="../js/apis/2.1-broadcastChannel.js" defer async></script>-->
+    <!--    <script src="../js/apis/3-history.js" defer async></script>-->
+    <!--    <script src="../js/apis/4.1-webStorage.js" defer async></script>-->
+    <!--    <script src="../js/apis/4.2-indexedDB.js" defer async></script>-->
+    <!--    <script src="../js/apis/5-intersectionObserverApi.js" defer async></script>-->
+    <!--    <script src="../js/apis/6-pageVisibility.js" defer async></script>-->
+    <!--    <script src="../js/apis/7-url.js" defer async></script>-->
+    <!--    <script src="../js/apis/8-notifications.js" defer async></script>-->
+    <!--    <script src="../js/apis/9-ajax.js" defer async></script>-->
+    <!--    <script src="../js/apis/10-formDataAndAjax.js" defer async></script>-->
+    <!--    <script src="../js/apis/11.1-fetch.js" defer async></script>-->
+</head>
+<body>
+<!-- events -->
+<!--<div>-->
+<!--    <button>click me</button>-->
+
+<!--    <div>-->
+<!--        <p>Please click on the checkbox control.</p>-->
+
+<!--        <form>-->
+<!--            <label for="id-checkbox">Checkbox:</label>-->
+<!--            <input type="checkbox" id="id-checkbox"/>-->
+<!--        </form>-->
+
+<!--        <div id="output-box"></div>-->
+<!--    </div>-->
+<!--</div>-->
+
+<!-- event bubbling -->
+<!--<div style="background-color: blue; width: 200px; height: 200px;">-->
+<!--    <div style="background-color: red; width: 100px; height: 100px;"></div>-->
+<!--</div>-->
+
+<!-- notification -->
+
+<!--<button id="request">request notification permission</button>-->
+<!--<button id="fire">fire</button>-->
+
+</body>
+</html>
+
+<style>
+    body {
+        /*width: 100vw;*/
+        /*height: 100vh;*/
+    }
+</style>

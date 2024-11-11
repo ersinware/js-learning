@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>templateAndSlot</title>
+	<style>
+		html {
+			visibility: hidden;
+		}
+	</style>
+	<link rel="stylesheet" href="../css/2-customComponents.css">
+	<script src="../js/13-customComponents.js" defer></script>
+</head>
+<body>
+<h2>Custom Components</h2>
+
+<!--The name of a custom element must contain a dash (-)-->
+<template id="my-card">
+	<!--CSS selectors used inside shadow DOM apply locally to your component-->
+	<!--external css bu card'ı seçebilir ama içindekileri seçemez
+	bu style specifity'si daha yüksek -->
+	<!--bu style, external css'te tanımlanmış variable'ları kullanabilir-->
+	<style>
+		/*bu component default olarak inline sanırım*/
+
+		/*Typically, a web component's layout/style/paint is fairly self-contained. Use CSS containment in :host for a perf win:
+		 :host {
+			 display: block;
+			 contain: content; Boom. CSS containment FTW.
+		 } */
+
+		/*Resetting inheritable styles
+		Inheritable styles (background, color, font, line-height, etc.) continue to inherit in shadow DOM.
+		That is, they pierce the shadow DOM boundary by default. If you want to start with a fresh slate,
+		use all: initial; to reset inheritable styles to their initial value when they cross the shadow boundary. */
+
+		/*
+		//CSS pseudo-classes
+		//Pseudo-classes relating specifically to custom elements:
+		//:defined: Matches any element that is defined, including built in elements and custom elements
+		//defined with CustomElementRegistry.define()).
+		//
+		//:host: Selects the shadow host of the shadow DOM containing the CSS it is used inside.
+		//
+		//:host(): Selects the shadow host of the shadow DOM containing the CSS it is used inside (so
+		//you can select a custom element from inside its shadow DOM) — but only if the selector given
+		//as the function's parameter matches the shadow host.
+		//
+		//:host-context(): Selects the shadow host of the shadow DOM containing the CSS it is used
+		//inside (so you can select a custom element from inside its shadow DOM) — but only if the
+		//selector given as the function's parameter matches the shadow host's ancestor(s) in the place
+		//it sits inside the DOM hierarchy.
+		//
+		//CSS pseudo-elements
+		//Pseudo-elements relating specifically to custom elements:
+		//::part: Represents any element within a shadow tree that has a matching part attribute.
+		//CSS pseudo-elements
+		//Pseudo-elements relating specifically to slots:
+		//::slotted: Matches any content that is inserted into a slot.
+		//
+		*/
+
+		*, *::before, *::after {
+			box-sizing: inherit;
+		}
+
+		/*my-card'ı seçer*/
+		:host {
+			box-sizing: border-box;
+			cursor: grab;
+			transition: background-color 0.25s;
+		}
+
+		:host([loading]) {
+			transition: none !important;
+		}
+
+		:host(:hover) {
+			background-color: antiquewhite;
+		}
+
+		:host([beige]) {
+			background-color: antiquewhite;
+		}
+
+		/*:host {
+			opacity: 0.4;
+			will-change: opacity;
+			transition: opacity 300ms ease-in-out;
+		}
+
+		:host(:hover) {
+			opacity: 1;
+		}
+
+		:host([disabled]) { !* style when host has disabled attribute. *!
+			background: grey;
+			pointer-events: none;
+			opacity: 0.4;
+		}
+
+		:host(.blue) {
+			color: blue; !* color host when it has class="blue" *!
+		}
+
+		:host(.pink) > #tabs {
+			color: pink; !* color internal #tabs node when host has class="pink". *!
+		}*/
+
+		/*:host-context(<selector>) matches the component if it or any of its ancestors matches <selector>.
+		 A common use for this is theming based on a component's surroundings.
+		 For example, many people do theming by applying a class to <html> or <body>:
+
+		<body class="darktheme">
+			<fancy-tabs>
+				...
+			</fancy-tabs>
+		</body>
+
+		:host-context(.darktheme) would style <fancy-tabs> when it's a descendant of .darktheme:
+
+		:host-context(.darktheme) {
+			color: white;
+			background: black;
+		}*/
+
+		/*!*slot yerine verilmiş olanları seçer (sadece top level olanları seçer)*!
+		::slotted(*) {
+			background-color: blue;
+		}
+
+		::slotted(span) {
+
+		}*/
+
+		.cardContainer {
+			padding: 2rem;
+			height: 100%;
+
+			border-radius: 0.5rem;
+
+			box-shadow: 0 0 10px 1px lightgray;
+		}
+
+		.cardHeader > h3 {
+			margin: 0;
+		}
+
+		.cardContent {
+			margin-top: 1rem;
+		}
+
+		.cardContent > p {
+			display: -webkit-box;
+
+			margin: 0;
+
+			overflow: hidden;
+			-webkit-box-orient: vertical;
+			-webkit-line-clamp: 10;
+		}
+
+		.cardFooter {
+			margin-top: 2rem;
+
+			float: bottom;
+			text-align: right;
+		}
+
+		.negativeButton, .positiveButton {
+			padding: 0.4rem 1rem;
+
+			border: none;
+			border-radius: 0.2rem;
+
+			letter-spacing: 0.1rem;
+			font-weight: bold;
+			font-size: 0.8em;
+
+			cursor: grab;
+		}
+
+		.positiveButton {
+			margin-left: 0.5rem;
+
+			color: white;
+			background-color: green;
+
+			box-shadow: 0 0 5px 1px lightgray;
+		}
+
+		.positiveButton:hover {
+			background-color: darkgreen;
+		}
+
+		.negativeButton {
+			color: indianred;
+			background-color: transparent;
+		}
+
+		.negativeButton:hover {
+			background-color: lightgray;
+		}
+	</style>
+	<!--slot ile parametre almak yerine default data da verilebilir-->
+	<div class="cardContainer">
+		<div class="cardHeader">
+			<h3>
+				<slot name="title">Card Title</slot>
+			</h3>
+		</div>
+		<div class="cardContent">
+			<p>
+				<slot name="content">Content</slot>
+			</p>
+		</div>
+		<div class="cardFooter">
+			<button class="negativeButton">
+				<slot name="negativeButton">NEGATIVE</slot>
+			</button>
+			<button class="positiveButton">
+				<slot name="positiveButton">POSITIVE</slot>
+			</button>
+		</div>
+	</div>
+</template>
+
+<div class="gridContainer">
+	<my-card newAttribute="value from html" newBooleanAttribute beige>
+		<span slot="title">First Custom Component</span>
+		<span slot="content">
+		Lorem ipsum dolor sit amet, consectetur adipisicing elit. Amet corporis cupiditate fugit
+				ipsum iusto, minima nam necessitatibus omnis tenetur velit? Amet animi dignissimos dolorum
+				fuga fugit id, quisquam voluptatem! Eveniet. Architecto, autem cumque dignissimos inventore
+				odit optio quod repudiandae voluptate. Beatae commodi enim eos ex, excepturi incidunt
+				libero nemo non odio odit, officia omnis optio perspiciatis provident quia sapiente,
+				veniam? A architecto dolores modi nisi nostrum provident sit, soluta ut vitae voluptatem?
+				Culpa et laborum quasi sunt ut. Aliquid cum cupiditate ea enim incidunt molestiae odit
+				provident quasi, quia sequi? Asperiores illum, laboriosam. A accusantium at, consectetur
+				cumque impedit inventore labore minus natus numquam odit perspiciatis quam quibusdam
+				ratione temporibus ut? Amet eaque iste minima nam neque placeat quod sapiente! A
+				accusantium atque consectetur consequatur dolor ea, earum eligendi enim error est et
+				excepturi expedita explicabo iste itaque maiores minus nobis nulla odit officiis porro
+				possimus qui rerum sint voluptatum?
+	</span>
+		<span slot="negativeButton">CANCEL</span>
+		<span slot="positiveButton">CONFIRM</span>
+	</my-card>
+	<my-card>
+		<span slot="title">First Custom Component</span>
+		<span slot="content">
+		Lorem ipsum dolor sit amet, consectetur adipisicing elit. Amet corporis cupiditate fugit
+				ipsum iusto, minima nam necessitatibus omnis tenetur velit? Amet animi dignissimos dolorum
+				fuga fugit id, quisquam voluptatem! Eveniet. Architecto, autem cumque dignissimos inventore
+				odit optio quod repudiandae voluptate. Beatae commodi enim eos ex, excepturi incidunt
+				libero nemo non odio odit, officia omnis optio perspiciatis provident quia sapiente,
+				veniam? A architecto dolores modi nisi nostrum provident sit, soluta ut vitae voluptatem?
+				Culpa et laborum quasi sunt ut. Aliquid cum cupiditate ea enim incidunt molestiae odit
+				provident quasi, quia sequi? Asperiores illum, laboriosam. A accusantium at, consectetur
+				cumque impedit inventore labore minus natus numquam odit perspiciatis quam quibusdam
+				ratione temporibus ut? Amet eaque iste minima nam neque placeat quod sapiente! A
+				accusantium atque consectetur consequatur dolor ea, earum eligendi enim error est et
+				excepturi expedita explicabo iste itaque maiores minus nobis nulla odit officiis porro
+				possimus qui rerum sint voluptatum?
+	</span>
+		<span slot="negativeButton">CANCEL</span>
+		<span slot="positiveButton">CONFIRM</span>
+	</my-card>
+	<my-card>
+		<span slot="title">First Custom Component</span>
+		<span slot="content">
+		Lorem ipsum dolor sit amet, consectetur adipisicing elit. Amet corporis cupiditate fugit
+				ipsum iusto, minima nam necessitatibus omnis tenetur velit? Amet animi dignissimos dolorum
+				fuga fugit id, quisquam voluptatem! Eveniet. Architecto, autem cumque dignissimos inventore
+				odit optio quod repudiandae voluptate. Beatae commodi enim eos ex, excepturi incidunt
+				libero nemo non odio odit, officia omnis optio perspiciatis provident quia sapiente,
+				veniam? A architecto dolores modi nisi nostrum provident sit, soluta ut vitae voluptatem?
+				Culpa et laborum quasi sunt ut. Aliquid cum cupiditate ea enim incidunt molestiae odit
+				provident quasi, quia sequi? Asperiores illum, laboriosam. A accusantium at, consectetur
+				cumque impedit inventore labore minus natus numquam odit perspiciatis quam quibusdam
+				ratione temporibus ut? Amet eaque iste minima nam neque placeat quod sapiente! A
+				accusantium atque consectetur consequatur dolor ea, earum eligendi enim error est et
+				excepturi expedita explicabo iste itaque maiores minus nobis nulla odit officiis porro
+				possimus qui rerum sint voluptatum?
+	</span>
+		<span slot="negativeButton">CANCEL</span>
+		<span slot="positiveButton">CONFIRM</span>
+	</my-card>
+	<my-card>
+		<span slot="title">First Custom Component</span>
+		<span slot="content">
+		Lorem ipsum dolor sit amet, consectetur adipisicing elit. Amet corporis cupiditate fugit
+				ipsum iusto, minima nam necessitatibus omnis tenetur velit? Amet animi dignissimos dolorum
+				fuga fugit id, quisquam voluptatem! Eveniet. Architecto, autem cumque dignissimos inventore
+				odit optio quod repudiandae voluptate. Beatae commodi enim eos ex, excepturi incidunt
+				libero nemo non odio odit, officia omnis optio perspiciatis provident quia sapiente,
+				veniam? A architecto dolores modi nisi nostrum provident sit, soluta ut vitae voluptatem?
+				Culpa et laborum quasi sunt ut. Aliquid cum cupiditate ea enim incidunt molestiae odit
+				provident quasi, quia sequi? Asperiores illum, laboriosam. A accusantium at, consectetur
+				cumque impedit inventore labore minus natus numquam odit perspiciatis quam quibusdam
+				ratione temporibus ut? Amet eaque iste minima nam neque placeat quod sapiente! A
+				accusantium atque consectetur consequatur dolor ea, earum eligendi enim error est et
+				excepturi expedita explicabo iste itaque maiores minus nobis nulla odit officiis porro
+				possimus qui rerum sint voluptatum?
+	</span>
+		<span slot="negativeButton">CANCEL</span>
+		<span slot="positiveButton">CONFIRM</span>
+	</my-card>
+	<my-card>
+		<span slot="title">First Custom Component</span>
+		<span slot="content">
+		Lorem ipsum dolor sit amet, consectetur adipisicing elit. Amet corporis cupiditate fugit
+				ipsum iusto, minima nam necessitatibus omnis tenetur velit? Amet animi dignissimos dolorum
+				fuga fugit id, quisquam voluptatem! Eveniet. Architecto, autem cumque dignissimos inventore
+				odit optio quod repudiandae voluptate. Beatae commodi enim eos ex, excepturi incidunt
+				libero nemo non odio odit, officia omnis optio perspiciatis provident quia sapiente,
+				veniam? A architecto dolores modi nisi nostrum provident sit, soluta ut vitae voluptatem?
+				Culpa et laborum quasi sunt ut. Aliquid cum cupiditate ea enim incidunt molestiae odit
+				provident quasi, quia sequi? Asperiores illum, laboriosam. A accusantium at, consectetur
+				cumque impedit inventore labore minus natus numquam odit perspiciatis quam quibusdam
+				ratione temporibus ut? Amet eaque iste minima nam neque placeat quod sapiente! A
+				accusantium atque consectetur consequatur dolor ea, earum eligendi enim error est et
+				excepturi expedita explicabo iste itaque maiores minus nobis nulla odit officiis porro
+				possimus qui rerum sint voluptatum?
+	</span>
+		<span slot="negativeButton">CANCEL</span>
+		<span slot="positiveButton">CONFIRM</span>
+	</my-card>
+	<my-card>
+		<span slot="title">First Custom Component</span>
+		<span slot="content">
+		Lorem ipsum dolor sit amet, consectetur adipisicing elit. Amet corporis cupiditate fugit
+				ipsum iusto, minima nam necessitatibus omnis tenetur velit? Amet animi dignissimos dolorum
+				fuga fugit id, quisquam voluptatem! Eveniet. Architecto, autem cumque dignissimos inventore
+				odit optio quod repudiandae voluptate. Beatae commodi enim eos ex, excepturi incidunt
+				libero nemo non odio odit, officia omnis optio perspiciatis provident quia sapiente,
+				veniam? A architecto dolores modi nisi nostrum provident sit, soluta ut vitae voluptatem?
+				Culpa et laborum quasi sunt ut. Aliquid cum cupiditate ea enim incidunt molestiae odit
+				provident quasi, quia sequi? Asperiores illum, laboriosam. A accusantium at, consectetur
+				cumque impedit inventore labore minus natus numquam odit perspiciatis quam quibusdam
+				ratione temporibus ut? Amet eaque iste minima nam neque placeat quod sapiente! A
+				accusantium atque consectetur consequatur dolor ea, earum eligendi enim error est et
+				excepturi expedita explicabo iste itaque maiores minus nobis nulla odit officiis porro
+				possimus qui rerum sint voluptatum?
+	</span>
+		<span slot="negativeButton">CANCEL</span>
+		<span slot="positiveButton">CONFIRM</span>
+	</my-card>
+	<my-card>
+		<span slot="title">First Custom Component</span>
+		<span slot="content">
+		Lorem ipsum dolor sit amet, consectetur adipisicing elit. Amet corporis cupiditate fugit
+				ipsum iusto, minima nam necessitatibus omnis tenetur velit? Amet animi dignissimos dolorum
+				fuga fugit id, quisquam voluptatem! Eveniet. Architecto, autem cumque dignissimos inventore
+				odit optio quod repudiandae voluptate. Beatae commodi enim eos ex, excepturi incidunt
+				libero nemo non odio odit, officia omnis optio perspiciatis provident quia sapiente,
+				veniam? A architecto dolores modi nisi nostrum provident sit, soluta ut vitae voluptatem?
+				Culpa et laborum quasi sunt ut. Aliquid cum cupiditate ea enim incidunt molestiae odit
+				provident quasi, quia sequi? Asperiores illum, laboriosam. A accusantium at, consectetur
+				cumque impedit inventore labore minus natus numquam odit perspiciatis quam quibusdam
+				ratione temporibus ut? Amet eaque iste minima nam neque placeat quod sapiente! A
+				accusantium atque consectetur consequatur dolor ea, earum eligendi enim error est et
+				excepturi expedita explicabo iste itaque maiores minus nobis nulla odit officiis porro
+				possimus qui rerum sint voluptatum?
+	</span>
+		<span slot="negativeButton">CANCEL</span>
+		<span slot="positiveButton">CONFIRM</span>
+	</my-card>
+	<my-card>
+		<span slot="title">First Custom Component</span>
+		<span slot="content">
+		Lorem ipsum dolor sit amet, consectetur adipisicing elit. Amet corporis cupiditate fugit
+				ipsum iusto, minima nam necessitatibus omnis tenetur velit? Amet animi dignissimos dolorum
+				fuga fugit id, quisquam voluptatem! Eveniet. Architecto, autem cumque dignissimos inventore
+				odit optio quod repudiandae voluptate. Beatae commodi enim eos ex, excepturi incidunt
+				libero nemo non odio odit, officia omnis optio perspiciatis provident quia sapiente,
+				veniam? A architecto dolores modi nisi nostrum provident sit, soluta ut vitae voluptatem?
+				Culpa et laborum quasi sunt ut. Aliquid cum cupiditate ea enim incidunt molestiae odit
+				provident quasi, quia sequi? Asperiores illum, laboriosam. A accusantium at, consectetur
+				cumque impedit inventore labore minus natus numquam odit perspiciatis quam quibusdam
+				ratione temporibus ut? Amet eaque iste minima nam neque placeat quod sapiente! A
+				accusantium atque consectetur consequatur dolor ea, earum eligendi enim error est et
+				excepturi expedita explicabo iste itaque maiores minus nobis nulla odit officiis porro
+				possimus qui rerum sint voluptatum?
+	</span>
+		<span slot="negativeButton">CANCEL</span>
+		<span slot="positiveButton">CONFIRM</span>
+	</my-card>
+	<my-card>
+		<span slot="title">First Custom Component</span>
+		<span slot="content">
+		Lorem ipsum dolor sit amet, consectetur adipisicing elit. Amet corporis cupiditate fugit
+				ipsum iusto, minima nam necessitatibus omnis tenetur velit? Amet animi dignissimos dolorum
+				fuga fugit id, quisquam voluptatem! Eveniet. Architecto, autem cumque dignissimos inventore
+				odit optio quod repudiandae voluptate. Beatae commodi enim eos ex, excepturi incidunt
+				libero nemo non odio odit, officia omnis optio perspiciatis provident quia sapiente,
+				veniam? A architecto dolores modi nisi nostrum provident sit, soluta ut vitae voluptatem?
+				Culpa et laborum quasi sunt ut. Aliquid cum cupiditate ea enim incidunt molestiae odit
+				provident quasi, quia sequi? Asperiores illum, laboriosam. A accusantium at, consectetur
+				cumque impedit inventore labore minus natus numquam odit perspiciatis quam quibusdam
+				ratione temporibus ut? Amet eaque iste minima nam neque placeat quod sapiente! A
+				accusantium atque consectetur consequatur dolor ea, earum eligendi enim error est et
+				excepturi expedita explicabo iste itaque maiores minus nobis nulla odit officiis porro
+				possimus qui rerum sint voluptatum?
+	</span>
+		<span slot="negativeButton">CANCEL</span>
+		<span slot="positiveButton">CONFIRM</span>
+	</my-card>
+	<my-card>
+		<span slot="title">First Custom Component</span>
+		<span slot="content">
+		Lorem ipsum dolor sit amet, consectetur adipisicing elit. Amet corporis cupiditate fugit
+				ipsum iusto, minima nam necessitatibus omnis tenetur velit? Amet animi dignissimos dolorum
+				fuga fugit id, quisquam voluptatem! Eveniet. Architecto, autem cumque dignissimos inventore
+				odit optio quod repudiandae voluptate. Beatae commodi enim eos ex, excepturi incidunt
+				libero nemo non odio odit, officia omnis optio perspiciatis provident quia sapiente,
+				veniam? A architecto dolores modi nisi nostrum provident sit, soluta ut vitae voluptatem?
+				Culpa et laborum quasi sunt ut. Aliquid cum cupiditate ea enim incidunt molestiae odit
+				provident quasi, quia sequi? Asperiores illum, laboriosam. A accusantium at, consectetur
+				cumque impedit inventore labore minus natus numquam odit perspiciatis quam quibusdam
+				ratione temporibus ut? Amet eaque iste minima nam neque placeat quod sapiente! A
+				accusantium atque consectetur consequatur dolor ea, earum eligendi enim error est et
+				excepturi expedita explicabo iste itaque maiores minus nobis nulla odit officiis porro
+				possimus qui rerum sint voluptatum?
+	</span>
+		<span slot="negativeButton">CANCEL</span>
+		<span slot="positiveButton">CONFIRM</span>
+	</my-card>
+	<my-card>
+		<span slot="title">First Custom Component</span>
+		<span slot="content">
+		Lorem ipsum dolor sit amet, consectetur adipisicing elit. Amet corporis cupiditate fugit
+				ipsum iusto, minima nam necessitatibus omnis tenetur velit? Amet animi dignissimos dolorum
+				fuga fugit id, quisquam voluptatem! Eveniet. Architecto, autem cumque dignissimos inventore
+				odit optio quod repudiandae voluptate. Beatae commodi enim eos ex, excepturi incidunt
+				libero nemo non odio odit, officia omnis optio perspiciatis provident quia sapiente,
+				veniam? A architecto dolores modi nisi nostrum provident sit, soluta ut vitae voluptatem?
+				Culpa et laborum quasi sunt ut. Aliquid cum cupiditate ea enim incidunt molestiae odit
+				provident quasi, quia sequi? Asperiores illum, laboriosam. A accusantium at, consectetur
+				cumque impedit inventore labore minus natus numquam odit perspiciatis quam quibusdam
+				ratione temporibus ut? Amet eaque iste minima nam neque placeat quod sapiente! A
+				accusantium atque consectetur consequatur dolor ea, earum eligendi enim error est et
+				excepturi expedita explicabo iste itaque maiores minus nobis nulla odit officiis porro
+				possimus qui rerum sint voluptatum?
+	</span>
+		<span slot="negativeButton">CANCEL</span>
+		<span slot="positiveButton">CONFIRM</span>
+	</my-card>
+	<my-card>
+		<span slot="title">First Custom Component</span>
+		<span slot="content">
+		Lorem ipsum dolor sit amet, consectetur adipisicing elit. Amet corporis cupiditate fugit
+				ipsum iusto, minima nam necessitatibus omnis tenetur velit? Amet animi dignissimos dolorum
+				fuga fugit id, quisquam voluptatem! Eveniet. Architecto, autem cumque dignissimos inventore
+				odit optio quod repudiandae voluptate. Beatae commodi enim eos ex, excepturi incidunt
+				libero nemo non odio odit, officia omnis optio perspiciatis provident quia sapiente,
+				veniam? A architecto dolores modi nisi nostrum provident sit, soluta ut vitae voluptatem?
+				Culpa et laborum quasi sunt ut. Aliquid cum cupiditate ea enim incidunt molestiae odit
+				provident quasi, quia sequi? Asperiores illum, laboriosam. A accusantium at, consectetur
+				cumque impedit inventore labore minus natus numquam odit perspiciatis quam quibusdam
+				ratione temporibus ut? Amet eaque iste minima nam neque placeat quod sapiente! A
+				accusantium atque consectetur consequatur dolor ea, earum eligendi enim error est et
+				excepturi expedita explicabo iste itaque maiores minus nobis nulla odit officiis porro
+				possimus qui rerum sint voluptatum?
+	</span>
+		<span slot="negativeButton">CANCEL</span>
+		<span slot="positiveButton">CONFIRM</span>
+	</my-card>
+	<my-card>
+		<span slot="title">First Custom Component</span>
+		<span slot="content">
+		Lorem ipsum dolor sit amet, consectetur adipisicing elit. Amet corporis cupiditate fugit
+				ipsum iusto, minima nam necessitatibus omnis tenetur velit? Amet animi dignissimos dolorum
+				fuga fugit id, quisquam voluptatem! Eveniet. Architecto, autem cumque dignissimos inventore
+				odit optio quod repudiandae voluptate. Beatae commodi enim eos ex, excepturi incidunt
+				libero nemo non odio odit, officia omnis optio perspiciatis provident quia sapiente,
+				veniam? A architecto dolores modi nisi nostrum provident sit, soluta ut vitae voluptatem?
+				Culpa et laborum quasi sunt ut. Aliquid cum cupiditate ea enim incidunt molestiae odit
+				provident quasi, quia sequi? Asperiores illum, laboriosam. A accusantium at, consectetur
+				cumque impedit inventore labore minus natus numquam odit perspiciatis quam quibusdam
+				ratione temporibus ut? Amet eaque iste minima nam neque placeat quod sapiente! A
+				accusantium atque consectetur consequatur dolor ea, earum eligendi enim error est et
+				excepturi expedita explicabo iste itaque maiores minus nobis nulla odit officiis porro
+				possimus qui rerum sint voluptatum?
+	</span>
+		<span slot="negativeButton">CANCEL</span>
+		<span slot="positiveButton">CONFIRM</span>
+	</my-card>
+</div>
+</body>
+</html>

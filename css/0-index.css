@@ -1,0 +1,16 @@
+html {
+    box-sizing: border-box;
+    font-family: Helvetica, serif;
+}
+
+*, *::before, *::after {
+    box-sizing: inherit;
+}
+
+:root {
+    --hoverBackgroundColor: red;
+}
+
+a:hover {
+    background-color: var(--hoverBackgroundColor);
+}
